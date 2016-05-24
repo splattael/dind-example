@@ -1,0 +1,26 @@
+version: "2"
+
+services:
+
+  docker-in-docker:
+    image: docker:dind
+    privileged: true
+    expose:
+      - 2375
+      - 2376
+
+  node1:
+    image: docker
+    links:
+      - docker-in-docker
+    environment:
+      DOCKER_HOST: tcp://docker-in-docker:2375
+    command: docker ps -a
+
+  node2:
+    image: docker
+    links:
+      - docker-in-docker
+    environment:
+      DOCKER_HOST: tcp://docker-in-docker:2375
+    command: docker images -a
